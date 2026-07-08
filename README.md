@@ -165,6 +165,3 @@ Key variables (defined in `databricks.yml`):
 
 Usama Patel (usamapatel340@gmail.com)
 
-
-
-This README provides a complete overview of your earthquake data pipeline project. Would you like me to update the actual README.md file in your bundle with this content?
