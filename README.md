@@ -53,8 +53,11 @@ This project implements a medallion architecture (Bronze → Silver) pipeline th
   1. Data ingestion (Bronze)
   2. Pipeline transformation (Silver)
   3. Dashboard refresh
+
+<img width="1067" height="562" alt="image" src="https://github.com/user-attachments/assets/f1647d9e-e379-4234-8941-f1999f4111df" />
   
-  <img width="1918" height="876" alt="Screenshot 2026-07-08 161613" src="https://github.com/user-attachments/assets/08bdba01-bcbc-489c-9e89-bd8658a3b0e6" />
+<img width="407" height="276" alt="image" src="https://github.com/user-attachments/assets/3555dab9-6a70-46d1-bcd1-f25fc0c34655" />
+
 
 
 ## 📁 Project Structure
