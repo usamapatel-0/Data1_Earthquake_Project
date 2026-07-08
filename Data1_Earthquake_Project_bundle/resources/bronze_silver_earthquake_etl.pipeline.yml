@@ -1,0 +1,19 @@
+# The main pipeline for Data1_Project
+
+resources:
+  pipelines:
+    bronze_silver_earthquake_etl:
+      name: Bronze_Silver_Earthquake1
+      configuration:
+        catalog_name: ${var.catalog}
+      libraries:
+        - glob:
+            include: ../src/DLT_Pipelines/Bronze_Silver_Earthquake1/transformations/**
+      schema: silver
+      continuous: false
+      development: false
+      photon: true
+      channel: CURRENT
+      catalog: ${var.catalog}
+      serverless: true
+      root_path: ../src/DLT_Pipelines/Bronze_Silver_Earthquake1
