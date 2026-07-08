@@ -1,0 +1,353 @@
+{
+  "datasets": [
+    {
+      "name": "81e8044c",
+      "displayName": "EarthQuake_Detail",
+      "queryLines": [
+        "select * from silver.earthquake_data_final"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "default"
+    },
+    {
+      "name": "be03b069",
+      "displayName": "EarthQuake_Type",
+      "queryLines": [
+        "SELECT\r\n",
+        "    COUNT(*) AS total_magnitude_bucket,\r\n",
+        "    magnitude_bucket\r\n",
+        "FROM (\r\n",
+        "    SELECT\r\n",
+        "        CASE\r\n",
+        "            WHEN CAST(mag AS DOUBLE) < 2 THEN 'Micro (<2)'\r\n",
+        "            WHEN CAST(mag AS DOUBLE) BETWEEN 2 AND 3 THEN 'Minor (2-3)'\r\n",
+        "            WHEN CAST(mag AS DOUBLE) BETWEEN 3 AND 4 THEN 'Light (3-4)'\r\n",
+        "            ELSE 'Moderate+ (4+)'\r\n",
+        "        END AS magnitude_bucket\r\n",
+        "    FROM silver.earthquake_data\r\n",
+        ") t\r\n",
+        "GROUP BY magnitude_bucket;"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "default"
+    },
+    {
+      "name": "d0c0e021",
+      "displayName": "EarthQuake_Country",
+      "queryLines": [
+        "SELECT\r\n",
+        "    COUNT(*) AS event_count,\r\n",
+        "    CASE\r\n",
+        "        WHEN size(split(place, ', ')) = 1 THEN split(place, ', ')[0]\r\n",
+        "        ELSE split(place, ', ')[1]\r\n",
+        "    END AS country\r\n",
+        "FROM silver.earthquake_data_final\r\n",
+        "GROUP BY country;"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "default"
+    }
+  ],
+  "pages": [
+    {
+      "name": "953fc2c0",
+      "displayName": "Earthquake",
+      "layout": [
+        {
+          "widget": {
+            "name": "ecb7e260",
+            "multilineTextboxSpec": {
+              "lines": [
+                "<span style=\"font-size:72px;line-height:1.5;color:#00A972\">**EarthQuake Dashboard**</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "earth",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "81e8044c",
+                  "fields": [
+                    {
+                      "name": "mag",
+                      "expression": "`mag`"
+                    },
+                    {
+                      "name": "place",
+                      "expression": "`place`"
+                    },
+                    {
+                      "name": "time",
+                      "expression": "`time`"
+                    },
+                    {
+                      "name": "tsunami",
+                      "expression": "`tsunami`"
+                    },
+                    {
+                      "name": "url",
+                      "expression": "`url`"
+                    },
+                    {
+                      "name": "alert",
+                      "expression": "`alert`"
+                    },
+                    {
+                      "name": "status",
+                      "expression": "`status`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "EarthQuake Detail"
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "mag"
+                  },
+                  {
+                    "fieldName": "place"
+                  },
+                  {
+                    "fieldName": "time"
+                  },
+                  {
+                    "fieldName": "tsunami"
+                  },
+                  {
+                    "fieldName": "url"
+                  },
+                  {
+                    "fieldName": "alert"
+                  },
+                  {
+                    "fieldName": "status"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 8,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "m",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "81e8044c",
+                  "fields": [
+                    {
+                      "name": "latitude",
+                      "expression": "`latitude`"
+                    },
+                    {
+                      "name": "longitude",
+                      "expression": "`longitude`"
+                    },
+                    {
+                      "name": "tsunami",
+                      "expression": "`tsunami`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "showTitle": true,
+                "title": "Map View of EarthQuake Places"
+              },
+              "mark": {
+                "size": -2.4
+              },
+              "widgetType": "symbol-map",
+              "encodings": {
+                "coordinates": {
+                  "latitude": {
+                    "fieldName": "latitude"
+                  },
+                  "longitude": {
+                    "fieldName": "longitude"
+                  }
+                },
+                "size": {
+                  "fieldName": "tsunami",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "e1",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "be03b069",
+                  "fields": [
+                    {
+                      "name": "total_magnitude_bucket",
+                      "expression": "`total_magnitude_bucket`"
+                    },
+                    {
+                      "name": "magnitude_bucket",
+                      "expression": "`magnitude_bucket`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "EarthQuake Magnitude"
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "total_magnitude_bucket",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total_Magnitude"
+                },
+                "color": {
+                  "fieldName": "magnitude_bucket",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "label": {
+                  "show": true
+                },
+                "extra": [
+                  {
+                    "fieldName": "total_magnitude_bucket"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 6,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "c3",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "d0c0e021",
+                  "fields": [
+                    {
+                      "name": "event_count",
+                      "expression": "`event_count`"
+                    },
+                    {
+                      "name": "country",
+                      "expression": "`country`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "showTitle": true,
+                "title": "Countries Where EarthQuake Happened"
+              },
+              "widgetType": "pie",
+              "encodings": {
+                "angle": {
+                  "fieldName": "event_count",
+                  "scale": {
+                    "type": "quantitative"
+                  },
+                  "displayName": "Total_Places_EarthQuake"
+                },
+                "color": {
+                  "fieldName": "country",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 14,
+            "width": 6,
+            "height": 6
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
