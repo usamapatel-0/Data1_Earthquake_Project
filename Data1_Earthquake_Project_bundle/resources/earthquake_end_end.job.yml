@@ -1,7 +1,7 @@
 resources:
   jobs:
     Data1_Earthquake_End_End_Job:
-      name: Data1_Earthquake_End_End_Job
+      name: Data1_Earthquake_End_End_Job_Prod
       tasks:
         - task_key: Ingestion_Bronze
           notebook_task:
