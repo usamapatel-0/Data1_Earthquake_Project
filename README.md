@@ -16,6 +16,8 @@ This project implements a medallion architecture (Bronze → Silver) pipeline th
 **Implemented a two-layer Medallion Architecture using Bronze and Silver layers.:**
 * **Bronze Layer**: Raw JSON earthquake data stored in Unity Catalog volume (`/Volumes/{catalog}/bronze/earthquake_data`)
 * **Silver Layer**: Cleaned, typed, and deduplicated streaming table (`earthquake_data_final`)
+  <img width="1536" height="1024" alt="Architecture1" src="https://github.com/user-attachments/assets/33430740-744f-4588-8ed5-023d73a93dfd" />
+
 
 **Technology Stack:**
 * **Databricks Lakeflow**: Orchestration and workflow management
