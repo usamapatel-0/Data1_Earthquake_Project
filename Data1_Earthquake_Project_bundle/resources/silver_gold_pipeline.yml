@@ -1,0 +1,20 @@
+resources:
+  pipelines:
+    silver_gold_earthquake_etl:
+      name: Silver_Gold_Earthquake
+      configuration:
+        catalog_name: ${var.catalog}
+
+      libraries:
+        - glob:
+            include: ../src/DLT_Pipelines/Silver_Gold_Earthquake/transformations/**
+
+      schema: gold
+      continuous: false
+      development: false
+      photon: true
+      channel: CURRENT
+
+      catalog: ${var.catalog}
+      serverless: true
+      root_path: ../src/DLT_Pipelines/Silver_Gold_Earthquake

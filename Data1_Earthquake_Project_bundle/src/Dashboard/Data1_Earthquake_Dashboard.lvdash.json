@@ -46,6 +46,27 @@
       ],
       "catalog": "data1_earthquake_dev",
       "schema": "default"
+    },
+    {
+      "name": "56efbb7d",
+      "displayName": "earthquake_summary",
+      "config": {
+        "version": "1.1",
+        "source": "data1_earthquake_dev.gold.earthquake_summary",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
     }
   ],
   "pages": [
