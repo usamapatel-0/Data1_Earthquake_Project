@@ -17,7 +17,7 @@ resources:
         - depends_on:
             - task_key: Bronze_Silver_Earthquake
           pipeline_task:
-            pipeline_id: ee246348-eb1f-4d9b-aea3-5878cacca9a2
+            pipeline_id: aa3ee994-a3c7-4415-b8f7-fac402687597
           task_key: Silver_Gold_Earthquake
         - dashboard_task:
             dashboard_id: 01f17a9c73961e03962fc5a0f58caffd
