@@ -1,167 +1,261 @@
 
+
+---
+
 # 🌍 Earthquake Data Pipeline Project
 
-A complete end-to-end data engineering solution for ingesting, processing, and visualizing real-time earthquake data from the USGS Earthquake API using Databricks Lakeflow.
+A complete end-to-end data engineering solution for ingesting, processing, transforming, and visualizing real-time earthquake data from the USGS Earthquake API using Databricks Lakeflow.
 
 ## 📋 Project Overview
 
-This project implements a medallion architecture (Bronze → Silver) pipeline that:
+This project implements a **Medallion Architecture (Bronze → Silver → Gold)** pipeline that:
+
 * Ingests earthquake data from the USGS Earthquake API into a Unity Catalog volume
 * Processes and cleanses the data using Lakeflow Spark Declarative Pipelines
-* Maintains a deduplicated, SCD Type 1 streaming table
+* Maintains a deduplicated, SCD Type 1 streaming Silver table
+* Creates business-ready Gold aggregate tables for analytics
 * Visualizes earthquake activity through an interactive dashboard
 
-## 🏗️ Architecture
+---
 
-**Implemented a two-layer Medallion Architecture using Bronze and Silver layers.:**
-* **Bronze Layer**: Raw JSON earthquake data stored in Unity Catalog volume (`/Volumes/{catalog}/bronze/earthquake_data`)
-* **Silver Layer**: Cleaned, typed, and deduplicated streaming table (`earthquake_data_final`)
-  <img width="1536" height="1024" alt="Architecture1" src="https://github.com/user-attachments/assets/33430740-744f-4588-8ed5-023d73a93dfd" />
+# 🏗️ Architecture
+
+**Implemented a three-layer Medallion Architecture using Bronze, Silver, and Gold layers.**
+
+* **Bronze Layer**
+
+  * Raw JSON earthquake data stored in Unity Catalog volume
+  * `/Volumes/{catalog}/bronze/earthquake_data`
+
+* **Silver Layer**
+
+  * Cleaned, typed, validated, and deduplicated streaming table
+  * `earthquake_data_final_silver`
+
+* **Gold Layer**
+
+  * Business-ready aggregated tables for reporting and dashboarding
+  * Examples:
+
+    * `earthquake_summary`
+    * `earthquake_daily`
+    * `magnitude_distribution`
+    * `status_summary`
+    * `top_locations`
+    * `tsunami_summary`
 
 
-**Technology Stack:**
-* **Databricks Lakeflow**: Orchestration and workflow management
-* **Spark Declarative Pipelines**: ETL transformations with Auto Loader and Auto CDC
-* **Unity Catalog**: Data governance and storage
-* **Lakeview Dashboard**: Data visualization
+
+---
+<img width="1343" height="732" alt="Screenshot 2026-07-15 071019" src="https://github.com/user-attachments/assets/c4848c57-b8a1-4fa0-8903-9c48dd99f378" />
+
+
+
 
 ## 📊 Components
 
-### 1. **Ingestion Notebook** (`ingestion_bronze.ipynb`)
+### 1. Ingestion Notebook (`ingestion_bronze.ipynb`)
+
 * Fetches earthquake data from USGS API
 * Writes raw JSON files to Unity Catalog volume
 * Configurable catalog parameter
-<img width="1918" height="887" alt="Screenshot 2026-07-08 164033" src="https://github.com/user-attachments/assets/142f42bd-3809-412a-9ab6-0bb2005116b5" />
-
-  
-
-### 2. **Pipeline** (`bronze_silver_earthquake_etl`)
-* **Auto Loader**: Incrementally ingests JSON files from volume
-* **Temporary View** (`earthquake_data_vw`): Parses nested JSON structure, explodes features array, extracts properties and geometry
-* **Streaming Table** (`earthquake_data_final`): Deduplicates by `id` using SCD Type 1 CDC pattern
-* <img width="1918" height="876" alt="Screenshot 2026-07-08 161613" src="https://github.com/user-attachments/assets/08bdba01-bcbc-489c-9e89-bd8658a3b0e6" />
-  
-
-### 3. **Dashboard** (`Data1_Earthquake_Dashboard`)
-* Visualizes earthquake metrics and trends
-* Connected to Silver layer table
-* <img width="1918" height="908" alt="Screenshot 2026-07-08 163309" src="https://github.com/user-attachments/assets/08916561-e150-466c-9deb-16206454c3e6" />
+<img width="1918" height="877" alt="Screenshot 2026-07-15 071255" src="https://github.com/user-attachments/assets/52da9dc9-0dd8-44ec-84d7-b90f6b1937ad" />
+<img width="1913" height="858" alt="image" src="https://github.com/user-attachments/assets/1047ac6f-86a4-4102-beca-15c55ab581ca" />
+<img width="1918" height="870" alt="image" src="https://github.com/user-attachments/assets/2c15255c-04c4-46b2-8ded-3935246140b0" />
 
 
-### 4. **End-to-End Job** (`Data1_Earthquake_End_End_Job`)
-* Orchestrates the complete workflow:
-  1. Data ingestion (Bronze)
-  2. Pipeline transformation (Silver)
-  3. Dashboard refresh
+---
 
-<img width="1067" height="562" alt="image" src="https://github.com/user-attachments/assets/f1647d9e-e379-4234-8941-f1999f4111df" />
-  
-<img width="407" height="276" alt="image" src="https://github.com/user-attachments/assets/3555dab9-6a70-46d1-bcd1-f25fc0c34655" />
+### 2. Bronze → Silver Pipeline (`bronze_silver_earthquake_etl`)
+
+* Auto Loader ingests JSON files
+* Parses nested JSON
+* Extracts earthquake properties
+* Cleans and casts columns
+* Creates temporary streaming view
+* Uses Auto CDC (SCD Type 1)
+* Produces:
+<img width="1918" height="883" alt="image" src="https://github.com/user-attachments/assets/f7cd4455-547c-4fbd-9ad1-927260e76998" />
 
 
+```
+earthquake_data_final_silver
+```
+
+---
+
+### 3. Silver → Gold Pipeline (`silver_gold_earthquake_etl`)
+
+Creates analytical tables from the Silver layer.
+
+Generated Gold tables:
+
+* earthquake_summary
+* earthquake_daily
+* magnitude_distribution
+* status_summary
+* top_locations
+* tsunami_summary
+
+These tables are optimized for dashboards and business reporting.
+
+<img width="1918" height="876" alt="image" src="https://github.com/user-attachments/assets/f05d6fc8-7926-422b-9ad1-6183453dded3" />
+
+
+---
+
+### 4. Dashboard (`Data1_Earthquake_Dashboard`)
+
+Visualizes earthquake metrics using the Gold Layer.
+https://dbc-a21855d2-df58.cloud.databricks.com/dashboardsv3/01f17f942dbb1cb88198a0cc2cd7abc8/published?o=7474651308033798
+
+
+<img width="1918" height="865" alt="image" src="https://github.com/user-attachments/assets/052d48f6-6b4f-4bb0-867b-d4969e73eea1" />
+
+
+Dashboard includes:
+
+* Overall earthquake summary
+* Daily earthquake trends
+* Magnitude distribution
+* Top earthquake locations
+* Tsunami statistics
+* Status distribution
+
+Connected to the Gold tables.
+
+
+---
+
+### 5. End-to-End Job (`Data1_Earthquake_End_End_Job`)
+
+Orchestrates the complete workflow:
+
+1. Data Ingestion (Bronze)
+2. Bronze → Silver Pipeline
+3. Silver → Gold Pipeline
+4. Dashboard Refresh
+<img width="1917" height="865" alt="image" src="https://github.com/user-attachments/assets/e70bc6c2-fc38-4da2-b2e0-0b01d5a3a142" />
+
+---
 
 ## 📁 Project Structure
 
-```
+```text
 Data1_Earthquake_Project_bundle/
-├── databricks.yml                 # Bundle configuration
-├── README.md                      # This file
-├── resources/                     # Resource definitions
+├── databricks.yml
+├── README.md
+├── resources/
 │   ├── bronze_silver_earthquake_etl.pipeline.yml
-│   ├── earthquake_end_end.job.yml
-│   └── earthquake_dashboard.yml
+│   ├── silver_gold_pipeline.yml
+│   ├── earthquake_dashboard.yml
+│   └── earthquake_end_end.job.yml
 └── src/
     ├── notebook/
-    │   └── ingestion_bronze.ipynb           # Data ingestion
-    ├── DLT_Pipelines/Bronze_Silver_Earthquake1/
-    │   └── transformations/
-    │       └── cleaned_earthquake_data.py   # Pipeline transformation logic
+    │   └── ingestion_bronze.ipynb
+    ├── DLT_Pipelines/
+    │   ├── Bronze_Silver_Earthquake1/
+    │   │   └── transformations/
+    │   │       └── cleaned_earthquake_data.py
+    │   └── Silver_Gold_Earthquake/
+    │       └── transformations/
+    │           └── my_transformation.py
     └── Dashboard/
         └── Data1_Earthquake_Dashboard.lvdash.json
 ```
+
+---
 
 ## 🔄 Data Flow
 
 ```mermaid
 graph LR
-    A[USGS API] --> B[Ingestion Notebook]
-    B --> C[UC Volume - Bronze]
-    C --> D[Auto Loader]
-    D --> E[Temporary View]
-    E --> F[Auto CDC]
-    F --> G[Streaming Table - Silver]
-    G --> H[Dashboard]
+    A[USGS API]
+    --> B[Ingestion Notebook]
+
+    B --> C[Bronze Volume]
+
+    C --> D[Bronze-Silver Pipeline]
+
+    D --> E[Silver Streaming Table]
+
+    E --> F[Silver-Gold Pipeline]
+
+    F --> G[Gold Tables]
+
+    G --> H[Lakeview Dashboard]
 ```
+
+---
 
 ## 📝 Data Schema
 
-**Silver Table Fields:**
-* `id` (primary key): Unique earthquake identifier
-* `mag`: Magnitude (double)
-* `place`: Location description
-* `time`: Earthquake timestamp
-* `latitude`, `longitude`, `depth`: Geographic coordinates
-* `tsunami`: Tsunami indicator
-* `status`, `type`, `alert`, `magType`: Event metadata
-* `_load_timestamp`: Ingestion timestamp
+### Silver Table
 
-## 🚀 Getting Started
+`earthquake_data_final_silver`
 
-### Prerequisites
-* Databricks workspace with Unity Catalog enabled
-* Serverless compute enabled
-* SQL Warehouse for dashboard queries
+Fields:
 
-### Deployment
+* id
+* mag
+* place
+* time
+* latitude
+* longitude
+* depth
+* tsunami
+* status
+* type
+* alert
+* magType
+* _load_timestamp
 
-#### Option 1: UI Deployment
-1. Open the **Deployments** panel (🚀 icon in left sidebar)
-2. Click **Deploy**
-3. Run the deployed job from the Deployments panel
+---
 
-#### Option 2: CLI Deployment
+### Gold Tables
+
+| Table                  | Description                      |
+| ---------------------- | -------------------------------- |
+| earthquake_summary     | Overall earthquake KPIs          |
+| earthquake_daily       | Daily earthquake counts          |
+| magnitude_distribution | Magnitude-wise distribution      |
+| status_summary         | Earthquake status summary        |
+| top_locations          | Most active earthquake locations |
+| tsunami_summary        | Tsunami event statistics         |
+
+---
+
+## 🚀 Deployment
+
 ```bash
 databricks bundle deploy --target dev
+
 databricks bundle run Data1_Earthquake_End_End_Job --target dev
 ```
 
-### Targets
-
-**Dev Target** (default):
-* Catalog: `data1_earthquake_dev`
-* Schema: `dev` / `silver`
-* Mode: Development (resources prefixed with `[dev username]`)
-
-**Prod Target**:
-* Catalog: `data1_earthquake_prod`
-* Schema: `prod` / `silver`
-* Mode: Production
-* Path: `/Workspace/PROD_Data1_Earthquake_Project`
-
-## 🔧 Configuration
-
-Key variables (defined in `databricks.yml`):
-* `catalog`: Target Unity Catalog catalog
-* `schema`: Target schema for dashboard
-* `warehouse_id`: SQL Warehouse for queries
+---
 
 ## 🛠️ Pipeline Features
 
-* **Auto Loader**: Incremental, scalable file ingestion with schema inference
-* **Auto CDC**: Change Data Capture with SCD Type 1 (keeps latest record per ID)
-* **Serverless**: No cluster management required
-* **Photon**: Accelerated query execution
-* **Continuous**: Can be configured for streaming or triggered mode
+* Auto Loader
+* Auto CDC (SCD Type 1)
+* Bronze → Silver → Gold Medallion Architecture
+* Streaming Processing
+* Serverless Compute
+* Photon Optimization
+* Lakeview Dashboard
+* Unity Catalog Integration
+
+---
 
 ## 📈 Monitoring
 
-* Pipeline updates and lineage: Pipeline monitoring page
-* Job runs: Jobs UI
-* Data quality: Pipeline expectations and event logs
-* Dashboard metrics: Lakeview dashboard
+* Bronze-Silver Pipeline Monitoring
+* Silver-Gold Pipeline Monitoring
+* Job Runs
+* Event Logs
+* Dashboard Metrics
+* Unity Catalog Lineage
 
-
-## 👤 Author
-
-Usama Patel (usamapatel340@gmail.com)
+---
 
