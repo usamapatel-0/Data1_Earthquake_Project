@@ -1,11 +1,4 @@
 {
-  "pages": [
-    {
-      "name": "2db00dfd",
-      "displayName": "Untitled page",
-      "pageType": "PAGE_TYPE_CANVAS"
-    }
-  ],
   "uiSettings": {
     "theme": {
       "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
