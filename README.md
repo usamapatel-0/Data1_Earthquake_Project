@@ -59,7 +59,8 @@ This project implements a **Medallion Architecture (Bronze → Silver → Gold)*
 * Fetches earthquake data from USGS API
 * Writes raw JSON files to Unity Catalog volume
 * Configurable catalog parameter
-<img width="1918" height="877" alt="Screenshot 2026-07-15 071255" src="https://github.com/user-attachments/assets/52da9dc9-0dd8-44ec-84d7-b90f6b1937ad" />
+<img width="1918" height="870" alt="image" src="https://github.com/user-attachments/assets/7a0e234c-fcde-4336-bb6a-54c75fc6e76f" />
+
 <img width="1913" height="858" alt="image" src="https://github.com/user-attachments/assets/1047ac6f-86a4-4102-beca-15c55ab581ca" />
 <img width="1918" height="870" alt="image" src="https://github.com/user-attachments/assets/2c15255c-04c4-46b2-8ded-3935246140b0" />
 
