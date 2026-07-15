@@ -85,10 +85,10 @@ def eathquake_data():
     return df
 
 
-dlt.create_streaming_table(name="earthquake_data_final")
+dlt.create_streaming_table(name="earthquake_data_final_silver")
 
 dlt.apply_changes(
-    target="earthquake_data_final",
+    target="earthquake_data_final_silver",
     source="earthquake_data_vw",
     keys=[primary_key],
     sequence_by="_load_timestamp",

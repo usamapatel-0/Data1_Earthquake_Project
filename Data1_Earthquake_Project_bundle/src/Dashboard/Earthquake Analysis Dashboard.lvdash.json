@@ -1,0 +1,566 @@
+{
+  "datasets": [
+    {
+      "name": "f4b94980",
+      "displayName": "earthquake_summary",
+      "config": {
+        "version": "1.1",
+        "source": "data1_earthquake_dev.gold.earthquake_summary",
+        "dimensions": [
+          {
+            "expr": "source.*"
+          }
+        ],
+        "measures": [
+          {
+            "name": "count",
+            "expr": "COUNT(*)",
+            "comment": "Represents the total number of rows in the dataset. Use this measure to count all",
+            "displayName": "Count"
+          }
+        ]
+      }
+    },
+    {
+      "name": "earthquake_main",
+      "displayName": "Earthquake Data",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  data1_earthquake_dev.silver.earthquake_data_final"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "silver"
+    },
+    {
+      "name": "top_locations",
+      "displayName": "Top Earthquake Locations",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  data1_earthquake_dev.gold.top_locations\n",
+        "ORDER BY\n",
+        "  earthquake_count DESC\n",
+        "LIMIT 20"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "gold"
+    },
+    {
+      "name": "earthquake_daily",
+      "displayName": "Daily Earthquake Trends",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  data1_earthquake_dev.gold.earthquake_daily\n",
+        "ORDER BY\n",
+        "  earthquake_date"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "gold"
+    },
+    {
+      "name": "magnitude_distribution",
+      "displayName": "Magnitude Distribution",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  data1_earthquake_dev.gold.magnitude_distribution"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "gold"
+    },
+    {
+      "name": "earthquake_summary",
+      "displayName": "Summary Statistics",
+      "queryLines": [
+        "SELECT\n",
+        "  *\n",
+        "FROM\n",
+        "  data1_earthquake_dev.gold.earthquake_summary"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "gold"
+    },
+    {
+      "name": "depth_analysis",
+      "displayName": "Depth Analysis",
+      "queryLines": [
+        "SELECT\n",
+        "  CASE\n",
+        "    WHEN depth < 10 THEN 'Shallow (<10km)'\n",
+        "    WHEN depth < 70 THEN 'Intermediate (10-70km)'\n",
+        "    ELSE 'Deep (>70km)'\n",
+        "  END AS depth_range,\n",
+        "  COUNT(*) AS earthquake_count\n",
+        "FROM\n",
+        "  data1_earthquake_dev.silver.earthquake_data_final\n",
+        "GROUP BY\n",
+        "  depth_range\n",
+        "ORDER BY\n",
+        "  depth_range"
+      ],
+      "catalog": "data1_earthquake_dev",
+      "schema": "silver"
+    }
+  ],
+  "pages": [
+    {
+      "name": "ad6d5171",
+      "displayName": "Page 1",
+      "layout": [
+        {
+          "widget": {
+            "name": "total_earthquakes",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "earthquake_summary",
+                  "fields": [
+                    {
+                      "name": "total_earthquakes",
+                      "expression": "`total_earthquakes`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Total Earthquakes",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "total_earthquakes"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 2,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "avg_magnitude",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "earthquake_summary",
+                  "fields": [
+                    {
+                      "name": "avg_magnitude",
+                      "expression": "`avg_magnitude`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Average Magnitude",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "avg_magnitude"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 3,
+            "y": 2,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "max_magnitude",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "earthquake_summary",
+                  "fields": [
+                    {
+                      "name": "max_magnitude",
+                      "expression": "`max_magnitude`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Maximum Magnitude",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max_magnitude"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 2,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "tsunami_events",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "earthquake_summary",
+                  "fields": [
+                    {
+                      "name": "tsunami_events",
+                      "expression": "`tsunami_events`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Tsunami Events",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "tsunami_events"
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 9,
+            "y": 2,
+            "width": 3,
+            "height": 2
+          }
+        },
+        {
+          "widget": {
+            "name": "earthquake_map",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "earthquake_main",
+                  "fields": [
+                    {
+                      "name": "avg(mag)",
+                      "expression": "AVG(`mag`)"
+                    },
+                    {
+                      "name": "latitude",
+                      "expression": "`latitude`"
+                    },
+                    {
+                      "name": "longitude",
+                      "expression": "`longitude`"
+                    },
+                    {
+                      "name": "place",
+                      "expression": "`place`"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Geographic Distribution",
+                "showTitle": true
+              },
+              "widgetType": "symbol-map",
+              "encodings": {
+                "coordinates": {
+                  "latitude": {
+                    "fieldName": "latitude"
+                  },
+                  "longitude": {
+                    "fieldName": "longitude"
+                  }
+                },
+                "color": {
+                  "fieldName": "avg(mag)",
+                  "scale": {
+                    "type": "quantitative",
+                    "colorRamp": {
+                      "mode": "scheme",
+                      "scheme": "reds"
+                    }
+                  }
+                },
+                "size": {
+                  "fieldName": "avg(mag)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "extra": [
+                  {
+                    "fieldName": "place"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 4,
+            "width": 12,
+            "height": 6
+          }
+        },
+        {
+          "widget": {
+            "name": "magnitude_dist",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "magnitude_distribution",
+                  "fields": [
+                    {
+                      "name": "magnitude_category",
+                      "expression": "`magnitude_category`"
+                    },
+                    {
+                      "name": "earthquake_count",
+                      "expression": "`earthquake_count`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Magnitude Distribution",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "magnitude_category",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                },
+                "y": {
+                  "fieldName": "earthquake_count",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 10,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "earthquake_trends",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "earthquake_daily",
+                  "fields": [
+                    {
+                      "name": "earthquake_date",
+                      "expression": "`earthquake_date`"
+                    },
+                    {
+                      "name": "total_events",
+                      "expression": "`total_events`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Earthquake Frequency Over Time",
+                "showTitle": true
+              },
+              "widgetType": "line",
+              "encodings": {
+                "x": {
+                  "fieldName": "earthquake_date",
+                  "scale": {
+                    "type": "temporal"
+                  }
+                },
+                "y": {
+                  "fieldName": "total_events",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                }
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 10,
+            "width": 6,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "top_locations_table",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "top_locations",
+                  "fields": [
+                    {
+                      "name": "place",
+                      "expression": "`place`"
+                    },
+                    {
+                      "name": "earthquake_count",
+                      "expression": "`earthquake_count`"
+                    },
+                    {
+                      "name": "avg_magnitude",
+                      "expression": "`avg_magnitude`"
+                    },
+                    {
+                      "name": "max_magnitude",
+                      "expression": "`max_magnitude`"
+                    }
+                  ],
+                  "disaggregated": true
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Top Earthquake Locations",
+                "showTitle": true
+              },
+              "widgetType": "table",
+              "encodings": {
+                "columns": [
+                  {
+                    "fieldName": "place"
+                  },
+                  {
+                    "fieldName": "earthquake_count"
+                  },
+                  {
+                    "fieldName": "avg_magnitude"
+                  },
+                  {
+                    "fieldName": "max_magnitude"
+                  }
+                ]
+              },
+              "data": {
+                "queryName": "main_query"
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 14,
+            "width": 12,
+            "height": 4
+          }
+        },
+        {
+          "widget": {
+            "name": "82bec850",
+            "multilineTextboxSpec": {
+              "lines": [
+                "### <span style=\"font-size: 48px;color: #077A9D;line-height: 1.5;\">**Earthquake Dashboard**</span>"
+              ]
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 0,
+            "width": 12,
+            "height": 2
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
